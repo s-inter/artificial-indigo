@@ -65,7 +65,7 @@
 Example:
 ```go
 // new returns a pointer to a zeroed value
-p := new([]int)  // *[]int, pointing to nil slice
+p := new([]int)  // *[]int, p is a pointer to a nil slice
 
 // make returns an initialized slice ready to use
 s := make([]int, 10)  // []int with length and capacity of 10

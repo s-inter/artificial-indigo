@@ -2,7 +2,7 @@
   {
     "id": 1,
     "question": "What is the difference between `make` and `new` in Go?",
-    "answer": "`new(T)` allocates zeroed storage for a new item of type T and returns a pointer `*T`. It only allocates and zeros memory.\n\n`make(T, args)` is used only for slices, maps, and channels. It creates an initialized (not zeroed) instance of type T (not `*T`) and returns T itself.\n\nExample: `p := new([]int)` returns `*[]int` pointing to nil, while `s := make([]int, 10)` returns an initialized slice ready to use.",
+    "answer": "`new(T)` allocates zeroed storage for a new item of type T and returns a pointer `*T`. It only allocates and zeros memory.\n\n`make(T, args)` is used only for slices, maps, and channels. It creates an initialized (not zeroed) instance of type T (not `*T`) and returns T itself.\n\nExample: `p := new([]int)` returns `*[]int` where p is a pointer to a nil slice, while `s := make([]int, 10)` returns an initialized slice ready to use.",
     "difficulty": "intermediate"
   },
   {
