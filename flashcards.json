@@ -1,0 +1,152 @@
+[
+  {
+    "id": 1,
+    "question": "What is the difference between `make` and `new` in Go?",
+    "answer": "`new(T)` allocates zeroed storage for a new item of type T and returns a pointer `*T`. It only allocates and zeros memory.\n\n`make(T, args)` is used only for slices, maps, and channels. It creates an initialized (not zeroed) instance of type T (not `*T`) and returns T itself.\n\nExample: `p := new([]int)` returns `*[]int` pointing to nil, while `s := make([]int, 10)` returns an initialized slice ready to use.",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": 2,
+    "question": "Explain how goroutines are scheduled and what the GMP model is.",
+    "answer": "Go uses an M:N threading model called GMP:\n- **G (Goroutine)**: A goroutine, the basic unit of concurrency\n- **M (Machine)**: An OS thread managed by the Go runtime\n- **P (Processor)**: A logical processor representing resources needed to execute Go code\n\nThe runtime multiplexes goroutines (G) onto OS threads (M) through logical processors (P). Each P has a local run queue. This allows many goroutines to run on fewer OS threads. The scheduler performs work-stealing between Ps to balance load and uses async system calls to avoid blocking Ms during I/O.",
+    "difficulty": "advanced"
+  },
+  {
+    "id": 3,
+    "question": "What are the key differences between buffered and unbuffered channels?",
+    "answer": "**Unbuffered channels** (`make(chan T)`) have no capacity. Send blocks until a receiver is ready, and receive blocks until a sender is ready. They provide synchronization.\n\n**Buffered channels** (`make(chan T, capacity)`) have a capacity. Sends block only when the buffer is full; receives block only when empty. They decouple sender and receiver timing.\n\nExample: Unbuffered requires immediate receiver, buffered can store values up to capacity without blocking.",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": 4,
+    "question": "How do you prevent goroutine leaks?",
+    "answer": "Prevention strategies:\n1. **Use context for cancellation**: Pass `context.Context` and check `ctx.Done()`\n2. **Ensure channels have receivers**: Sending on a channel with no receiver blocks forever\n3. **Close channels when done**: Signal completion\n4. **Use timeouts**: Don't wait indefinitely\n5. **Use `sync.WaitGroup`**: Track goroutine completion\n\nAlways ensure goroutines can terminate by respecting cancellation signals and avoiding infinite blocking operations.",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": 5,
+    "question": "Explain the difference between value receivers and pointer receivers for methods.",
+    "answer": "**Value receiver** `func (t Type) Method()`: Operates on a copy. Changes don't affect the original. Can be called on both values and pointers.\n\n**Pointer receiver** `func (t *Type) Method()`: Operates on the original. Changes affect the original. More efficient for large structs.\n\nGuidelines: Use pointer receivers when modifying the receiver, for large structs, and be consistent (if one method uses pointer receiver, all should for interface satisfaction).",
+    "difficulty": "basic"
+  },
+  {
+    "id": 6,
+    "question": "What is the zero value in Go, and why is it important?",
+    "answer": "All variables are initialized to their zero value if not explicitly initialized:\n- Numbers: `0`\n- Booleans: `false`\n- Strings: `\"\"`\n- Pointers, slices, maps, channels, functions, interfaces: `nil`\n\nImportance:\n1. No undefined variables - safer code\n2. Zero values are often useful (empty slice can be appended to)\n3. Simplifies initialization\n4. Makes structs immediately usable",
+    "difficulty": "basic"
+  },
+  {
+    "id": 7,
+    "question": "How do slices work internally, and what is their relationship to arrays?",
+    "answer": "A slice is a descriptor containing:\n- Pointer to an underlying array\n- Length (number of elements in slice)\n- Capacity (number of elements in underlying array from slice's start)\n\nSlices provide a dynamic, flexible view into arrays. Multiple slices can share the same underlying array. When capacity is exceeded during `append`, a new larger array is allocated and elements are copied.",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": 8,
+    "question": "What is the purpose of the `defer` statement, and what are its pitfalls?",
+    "answer": "`defer` schedules a function call to execute after the surrounding function returns. Used for cleanup (closing files, unlocking mutexes).\n\nPitfalls:\n1. Arguments evaluated immediately, not when deferred function runs\n2. Runs in LIFO order (stack-based)\n3. Performance cost for each defer\n4. Defer in loops accumulates many deferred calls\n\nCommon pattern: `defer file.Close()` ensures cleanup.",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": 9,
+    "question": "Explain Go's error handling philosophy and best practices.",
+    "answer": "Go treats errors as values, not exceptions. Functions return error as the last return value.\n\nBest practices:\n1. Check errors explicitly - don't ignore\n2. Add context when wrapping: `fmt.Errorf(\"context: %w\", err)`\n3. Use sentinel errors for expected conditions\n4. Use custom error types for richer information\n5. Use `errors.Is` for checking sentinel errors in wrapped chains\n6. Use `errors.As` for extracting specific error types",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": 10,
+    "question": "What is the `select` statement used for, and how does it work?",
+    "answer": "`select` allows a goroutine to wait on multiple channel operations simultaneously. It blocks until one case can proceed, then executes that case. If multiple cases are ready, one is chosen pseudo-randomly.\n\nCommon patterns:\n- Timeouts with `time.After`\n- Non-blocking operations with `default`\n- Cancellation with `context.Done()`\n- Multiplexing multiple channels",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": 11,
+    "question": "What is the purpose of the `context` package?",
+    "answer": "The `context` package provides a way to carry deadlines, cancellation signals, and request-scoped values across API boundaries and between goroutines.\n\nKey uses:\n1. **Cancellation propagation**: Cancel downstream operations\n2. **Timeout management**: Automatically cancel long operations\n3. **Request-scoped values**: Pass request-specific data (use sparingly)\n\nExample: `ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)`",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": 12,
+    "question": "How do you handle graceful shutdown in a Go application?",
+    "answer": "Graceful shutdown involves:\n1. Catching OS signals (SIGTERM, SIGINT)\n2. Stopping acceptance of new requests\n3. Completing in-flight requests\n4. Cleaning up resources\n\nPattern: Use `signal.Notify()` to catch signals, then call `server.Shutdown(ctx)` with a timeout context to allow in-flight requests to complete before forcing shutdown.",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": 13,
+    "question": "What are interfaces in Go, and how do they differ from other languages?",
+    "answer": "Interfaces in Go are implicitly satisfied - a type implements an interface by implementing its methods, without explicit declaration. This is \"structural typing\" vs \"nominal typing.\"\n\nAdvantages:\n1. Decoupling: No dependency between interface and implementation\n2. Testability: Easy to create mocks\n3. Composition: Small interfaces are composable\n\nBest practice: \"Accept interfaces, return concrete types\"",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": 14,
+    "question": "Explain the difference between `sync.Mutex` and `sync.RWMutex`.",
+    "answer": "**`sync.Mutex`**: Mutual exclusion lock. Only one goroutine can hold the lock at a time, for both reads and writes.\n\n**`sync.RWMutex`**: Reader/Writer lock. Multiple readers can hold the lock simultaneously, but writers get exclusive access.\n\nUse `RWMutex` when reads are frequent and writes are rare for better performance.",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": 15,
+    "question": "What is the empty interface `interface{}` (or `any`), and when should you use it?",
+    "answer": "The empty interface `interface{}` (now `any`) can hold values of any type because every type implements zero methods.\n\nUse cases:\n- Generic data structures before Go 1.18\n- JSON unmarshaling to unknown structures\n- Printf-like variadic functions\n\nAvoid overuse:\n- Loss of type safety\n- Requires type assertions/switches\n- Go 1.18+ generics are often better",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": 16,
+    "question": "How do you write effective tests in Go?",
+    "answer": "Best practices:\n1. **Table-driven tests**: Test multiple cases with one function\n2. **Use subtests**: `t.Run()` for organization\n3. **Test naming**: `Test<FunctionName>` convention\n4. **Helper functions**: Use `t.Helper()`\n5. **Parallel tests**: Use `t.Parallel()` when safe\n6. **Mocking**: Use interfaces for dependency injection\n\nStructure tests with descriptive names and clear expectations.",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": 17,
+    "question": "What is a race condition, and how do you detect and prevent them in Go?",
+    "answer": "A race condition occurs when multiple goroutines access shared memory concurrently, and at least one is a write, without proper synchronization.\n\n**Detection**: Use `go test -race` or `go run -race`\n\n**Prevention**:\n1. Use mutexes to protect shared data\n2. Use channels to communicate\n3. Avoid shared state\n4. Use `sync/atomic` for simple counters",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": 18,
+    "question": "Explain Go modules and semantic import versioning.",
+    "answer": "Go modules are Go's dependency management system.\n\nKey concepts:\n- **`go.mod`**: Declares module path and dependencies\n- **`go.sum`**: Contains cryptographic hashes\n- **Semantic versioning**: v1.2.3 (major.minor.patch)\n- **Minimal version selection**: Uses oldest allowed version\n\n**Semantic import versioning**: Major versions v2+ must be included in import path (e.g., `import \"github.com/myuser/mylib/v2\"`).",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": 19,
+    "question": "What are common patterns for worker pools in Go?",
+    "answer": "Worker pools limit concurrent operations and reuse goroutines.\n\nPattern:\n1. Create a jobs channel\n2. Create a results channel\n3. Start N worker goroutines that read from jobs\n4. Use `sync.WaitGroup` to track completion\n5. Close results channel when all workers finish\n\nBenefits: Control concurrency, reuse goroutines, process jobs efficiently.",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": 20,
+    "question": "How does Go handle HTTP requests, and what is important for production use?",
+    "answer": "Go's `net/http` package provides a production-ready HTTP server.\n\nProduction considerations:\n1. **Timeouts**: Always set read, write, idle timeouts\n2. **Graceful shutdown**: Handle SIGTERM/SIGINT\n3. **Middleware**: Use for logging, auth, recovery\n4. **Context**: Propagate request context\n5. **Error handling**: Don't expose internal errors to clients\n\nAlways configure timeouts to prevent resource exhaustion.",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": 21,
+    "question": "What is `iota`, and how is it used?",
+    "answer": "`iota` is a predeclared identifier representing successive untyped integer constants within a `const` block. It resets to 0 when `const` appears and increments by 1.\n\nCommon uses:\n- Simple enumerations\n- Powers of 2 for bit flags: `1 << iota`\n- Skip values with blank identifier\n\nExample: `const (Sunday = iota; Monday; Tuesday)` creates 0, 1, 2.",
+    "difficulty": "basic"
+  },
+  {
+    "id": 22,
+    "question": "Explain struct tags and their common uses.",
+    "answer": "Struct tags are metadata attached to struct fields using backticks. Used by packages via reflection.\n\nCommon uses:\n- **JSON**: Control field names, omit empty: `json:\"name,omitempty\"`\n- **Validation**: Validate values: `validate:\"required,email\"`\n- **ORM**: Map to database columns: `db:\"user_id\"`\n- **Config**: Map to environment variables\n\nAccessed via reflection with `field.Tag.Get(\"json\")`.",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": 23,
+    "question": "How do you build a minimal Docker image for a Go application?",
+    "answer": "Use multi-stage builds:\n\n1. **Build stage**: Use `golang:alpine` to compile\n2. **Final stage**: Use minimal `alpine` or `scratch`\n3. **Static binary**: Build with `CGO_ENABLED=0`\n4. **Copy only binary**: From builder to final image\n\nBenefits: Small size, no build tools in final image, minimal attack surface.\n\nExample: FROM golang:alpine AS builder, then FROM alpine:latest for final stage.",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": 24,
+    "question": "What are some performance optimization techniques in Go?",
+    "answer": "Optimization techniques:\n1. **Profile first**: Use `pprof` to identify bottlenecks\n2. **Reduce allocations**: Reuse objects with `sync.Pool`, preallocate slices\n3. **Concurrency patterns**: Worker pools, buffered channels\n4. **Algorithm optimization**: Use appropriate data structures\n5. **Benchmarking**: Use `testing.B` to measure\n6. **Compiler optimizations**: Inline functions, escape analysis\n\nAlways measure before optimizing.",
+    "difficulty": "intermediate"
+  },
+  {
+    "id": 25,
+    "question": "How do you implement logging in a Go application for production?",
+    "answer": "Production logging best practices:\n1. **Structured logging**: Use JSON format (zap, zerolog, logrus)\n2. **Log levels**: DEBUG, INFO, WARN, ERROR\n3. **Context**: Include request IDs, user IDs\n4. **Performance**: Async logging, sampling\n5. **Output**: stdout (captured by orchestration)\n6. **Security**: Avoid logging sensitive data\n\nExample: Use `zap.NewProduction()` for structured JSON logging with proper levels and fields.",
+    "difficulty": "intermediate"
+  }
+]
