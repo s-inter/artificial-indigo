@@ -64,8 +64,8 @@ This is an interactive flashcard system designed to help you prepare for Go tech
 ### Filtering Options
 - **All**: View all 25 questions
 - **Basic**: Focus on fundamental concepts (3 questions)
-- **Intermediate**: Practice intermediate topics (20 questions)
-- **Advanced**: Challenge yourself with advanced questions (2 questions)
+- **Intermediate**: Practice intermediate topics (21 questions)
+- **Advanced**: Challenge yourself with advanced questions (1 question)
 
 ### Study Tools
 - **Shuffle**: Randomize the order of cards
@@ -125,14 +125,16 @@ The flashcards cover essential Go concepts for DevOps engineers:
 ## 📝 Study Guide
 
 For comprehensive answers and code examples, refer to:
-- **`interview_go_devops.md`**: Full Q&A with detailed explanations and code examples
+- **`interview_go_devops.md`**: Core Go concepts and topics overview
+- **`go_interview_25qa.md`**: Full 25 Q&A with detailed explanations and code examples
 - **`flashcards.json`**: Structured data used by the web interface
 
 ## 🛠️ Files in This Repository
 
 - **`index.html`**: Interactive flashcard web application
 - **`flashcards.json`**: Flashcard data in JSON format
-- **`interview_go_devops.md`**: Comprehensive study guide with all questions and detailed answers
+- **`interview_go_devops.md`**: Comprehensive topic outline and concept overview
+- **`go_interview_25qa.md`**: 25 interview questions with detailed answers and code examples
 - **`FLASHCARDS_GUIDE.md`**: This file - user guide for the flashcard system
 - **`README.md`**: Repository overview
 

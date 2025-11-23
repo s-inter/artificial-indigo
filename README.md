@@ -11,9 +11,9 @@ This repository contains a comprehensive Go technical interview preparation syst
    - [Open Flashcards](index.html) (or visit via GitHub Pages)
    - See [Flashcards Guide](FLASHCARDS_GUIDE.md) for detailed usage instructions
 
-2. **Comprehensive Study Guide**: Detailed Q&A covering Go concepts from basic to advanced
-   - [View Study Guide](interview_go_devops.md)
-   - All 25 questions with detailed answers and code examples
+2. **Study Materials**:
+   - [Go Concepts & Topics Overview](interview_go_devops.md) - Comprehensive topic outline
+   - [25 Interview Q&A](go_interview_25qa.md) - Detailed questions with answers and code examples
 
 3. **Features**:
    - ✅ 25 interview questions with comprehensive answers

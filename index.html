@@ -522,7 +522,7 @@
                             <div class="card-face">
                                 <div class="card-header">
                                     <span class="card-number">Question ${this.currentIndex + 1} of ${this.filteredCards.length}</span>
-                                    <span class="difficulty-badge difficulty-${card.difficulty}">${card.difficulty}</span>
+                                    <span class="difficulty-badge difficulty-${this.escapeHtml(card.difficulty)}">${this.escapeHtml(card.difficulty)}</span>
                                 </div>
                                 <div class="card-content">
                                     <div class="question">${this.escapeHtml(card.question)}</div>
@@ -532,7 +532,7 @@
                             <div class="card-face card-back">
                                 <div class="card-header">
                                     <span class="card-number">Answer ${this.currentIndex + 1} of ${this.filteredCards.length}</span>
-                                    <span class="difficulty-badge difficulty-${card.difficulty}">${card.difficulty}</span>
+                                    <span class="difficulty-badge difficulty-${this.escapeHtml(card.difficulty)}">${this.escapeHtml(card.difficulty)}</span>
                                 </div>
                                 <div class="card-content">
                                     <div class="answer">${this.formatAnswer(card.answer)}</div>
@@ -549,7 +549,7 @@
                 area.innerHTML = `
                     <div class="no-cards">
                         <h2>No Cards Available</h2>
-                        <p>${message}</p>
+                        <p>${this.escapeHtml(message)}</p>
                     </div>
                 `;
             },
