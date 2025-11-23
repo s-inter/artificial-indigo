@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Interview Flashcards - DevOps Context</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .controls {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .control-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .control-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-secondary {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #38a169;
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .btn-info {
+            background: #4299e1;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #3182ce;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .filter-btn:hover {
+            background: #f7fafc;
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .flashcard-container {
+            perspective: 1000px;
+            margin-bottom: 20px;
+        }
+
+        .flashcard {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            min-height: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            backface-visibility: hidden;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+
+        .card-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .card-number {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .difficulty-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .difficulty-basic {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .difficulty-intermediate {
+            background: #bee3f8;
+            color: #2c5282;
+        }
+
+        .difficulty-advanced {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .card-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 1.3em;
+            line-height: 1.6;
+            width: 100%;
+        }
+
+        .question {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .answer {
+            color: #4a5568;
+            white-space: pre-line;
+            text-align: left;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .card-footer {
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+            color: #999;
+            font-style: italic;
+            font-size: 0.9em;
+        }
+
+        .navigation {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+
+        .no-cards {
+            background: white;
+            border-radius: 15px;
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .no-cards h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .no-cards p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .flashcard {
+                min-height: 350px;
+                padding: 30px 20px;
+            }
+
+            .card-face {
+                padding: 30px 20px;
+            }
+
+            .card-content {
+                font-size: 1.1em;
+            }
+
+            .control-row {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .filter-buttons {
+                width: 100%;
+            }
+
+            .filter-btn {
+                flex: 1;
+            }
+        }
+
+        .keyboard-hint {
+            text-align: center;
+            color: white;
+            margin-top: 20px;
+            opacity: 0.8;
+            font-size: 0.9em;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎓 Go Interview Flashcards</h1>
+            <p class="subtitle">DevOps Context - 25 Essential Questions</p>
+        </header>
+
+        <div class="controls">
+            <div class="control-row">
+                <button class="btn btn-primary" onclick="app.shuffleCards()">🔀 Shuffle</button>
+                <button class="btn btn-secondary" onclick="app.resetProgress()">🔄 Reset Progress</button>
+                <button class="btn btn-info" onclick="app.toggleStudyMode()">📚 Study Mode</button>
+            </div>
+
+            <div class="control-row">
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all" onclick="app.filterByDifficulty('all')">All</button>
+                    <button class="filter-btn" data-filter="basic" onclick="app.filterByDifficulty('basic')">Basic</button>
+                    <button class="filter-btn" data-filter="intermediate" onclick="app.filterByDifficulty('intermediate')">Intermediate</button>
+                    <button class="filter-btn" data-filter="advanced" onclick="app.filterByDifficulty('advanced')">Advanced</button>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="currentCard">1</div>
+                    <div class="stat-label">Current Card</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalCards">25</div>
+                    <div class="stat-label">Total Cards</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="studiedCards">0</div>
+                    <div class="stat-label">Studied</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="flashcardArea">
+            <!-- Flashcard will be inserted here -->
+        </div>
+
+        <div class="navigation">
+            <button class="btn btn-danger" onclick="app.previousCard()">← Previous</button>
+            <div class="nav-buttons">
+                <button class="btn btn-primary" onclick="app.flipCard()">Flip Card</button>
+                <button class="btn btn-secondary" onclick="app.markStudied()">✓ Mark Studied</button>
+            </div>
+            <button class="btn btn-danger" onclick="app.nextCard()">Next →</button>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+        </div>
+
+        <div class="keyboard-hint">
+            💡 Tip: Use ← → arrow keys to navigate, Space to flip, Enter to mark as studied
+        </div>
+    </div>
+
+    <script>
+        const app = {
+            flashcards: [],
+            filteredCards: [],
+            currentIndex: 0,
+            isFlipped: false,
+            studiedSet: new Set(),
+            currentFilter: 'all',
+
+            async init() {
+                try {
+                    const response = await fetch('flashcards.json');
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: Failed to load flashcards.json`);
+                    }
+                    
+                    const text = await response.text();
+                    
+                    try {
+                        this.flashcards = JSON.parse(text);
+                    } catch (parseError) {
+                        throw new Error(`Invalid JSON in flashcards.json: ${parseError.message}`);
+                    }
+                    
+                    this.filteredCards = [...this.flashcards];
+                    this.loadProgress();
+                    this.renderCard();
+                    this.updateStats();
+                    this.setupKeyboardShortcuts();
+                } catch (error) {
+                    console.error('Error loading flashcards:', error);
+                    let errorMessage = 'Error loading flashcards. ';
+                    
+                    if (error.message.includes('HTTP 404')) {
+                        errorMessage += 'The flashcards.json file was not found. Please ensure it is in the same directory as index.html.';
+                    } else if (error.message.includes('Invalid JSON')) {
+                        errorMessage += error.message;
+                    } else if (error.message.includes('Failed to fetch')) {
+                        errorMessage += 'Please ensure you are running this from a web server (not file://).';
+                    } else {
+                        errorMessage += error.message;
+                    }
+                    
+                    this.showNoCards(errorMessage);
+                }
+            },
+
+            renderCard() {
+                const area = document.getElementById('flashcardArea');
+                
+                if (this.filteredCards.length === 0) {
+                    this.showNoCards('No cards match the current filter.');
+                    return;
+                }
+
+                const card = this.filteredCards[this.currentIndex];
+                this.isFlipped = false;
+
+                area.innerHTML = `
+                    <div class="flashcard-container">
+                        <div class="flashcard" id="flashcard" onclick="app.flipCard()">
+                            <div class="card-face">
+                                <div class="card-header">
+                                    <span class="card-number">Question ${this.currentIndex + 1} of ${this.filteredCards.length}</span>
+                                    <span class="difficulty-badge difficulty-${this.escapeHtml(card.difficulty)}">${this.escapeHtml(card.difficulty)}</span>
+                                </div>
+                                <div class="card-content">
+                                    <div class="question">${this.escapeHtml(card.question)}</div>
+                                </div>
+                                <div class="card-footer">Click to reveal answer</div>
+                            </div>
+                            <div class="card-face card-back">
+                                <div class="card-header">
+                                    <span class="card-number">Answer ${this.currentIndex + 1} of ${this.filteredCards.length}</span>
+                                    <span class="difficulty-badge difficulty-${this.escapeHtml(card.difficulty)}">${this.escapeHtml(card.difficulty)}</span>
+                                </div>
+                                <div class="card-content">
+                                    <div class="answer">${this.formatAnswer(card.answer)}</div>
+                                </div>
+                                <div class="card-footer">Click to see question</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            },
+
+            showNoCards(message) {
+                const area = document.getElementById('flashcardArea');
+                area.innerHTML = `
+                    <div class="no-cards">
+                        <h2>No Cards Available</h2>
+                        <p>${this.escapeHtml(message)}</p>
+                    </div>
+                `;
+            },
+
+            flipCard() {
+                if (this.filteredCards.length === 0) return;
+                const flashcard = document.getElementById('flashcard');
+                this.isFlipped = !this.isFlipped;
+                flashcard.classList.toggle('flipped');
+            },
+
+            nextCard() {
+                if (this.filteredCards.length === 0) return;
+                this.currentIndex = (this.currentIndex + 1) % this.filteredCards.length;
+                this.renderCard();
+                this.updateStats();
+            },
+
+            previousCard() {
+                if (this.filteredCards.length === 0) return;
+                this.currentIndex = (this.currentIndex - 1 + this.filteredCards.length) % this.filteredCards.length;
+                this.renderCard();
+                this.updateStats();
+            },
+
+            markStudied() {
+                if (this.filteredCards.length === 0) return;
+                const card = this.filteredCards[this.currentIndex];
+                this.studiedSet.add(card.id);
+                this.saveProgress();
+                this.updateStats();
+                this.nextCard();
+            },
+
+            shuffleCards() {
+                this.filteredCards = this.shuffleArray([...this.filteredCards]);
+                this.currentIndex = 0;
+                this.renderCard();
+                this.updateStats();
+            },
+
+            shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            },
+
+            filterByDifficulty(difficulty) {
+                this.currentFilter = difficulty;
+                
+                // Update active filter button
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.filter === difficulty) {
+                        btn.classList.add('active');
+                    }
+                });
+
+                // Filter cards
+                if (difficulty === 'all') {
+                    this.filteredCards = [...this.flashcards];
+                } else {
+                    this.filteredCards = this.flashcards.filter(card => card.difficulty === difficulty);
+                }
+
+                this.currentIndex = 0;
+                this.renderCard();
+                this.updateStats();
+            },
+
+            toggleStudyMode() {
+                // Filter to show only unstudied cards
+                const unstudiedCards = this.flashcards.filter(card => !this.studiedSet.has(card.id));
+                
+                if (unstudiedCards.length === 0) {
+                    this.showNotification('Great job! You\'ve studied all cards. Click "Reset Progress" to start over.', 'success');
+                    return;
+                }
+
+                this.filteredCards = unstudiedCards;
+                this.currentIndex = 0;
+                this.currentFilter = 'unstudied';
+                
+                // Update UI
+                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                
+                this.renderCard();
+                this.updateStats();
+            },
+
+            resetProgress() {
+                if (this.confirmAction('Are you sure you want to reset your progress?')) {
+                    this.studiedSet.clear();
+                    this.saveProgress();
+                    this.updateStats();
+                    this.showNotification('Progress reset successfully!', 'info');
+                }
+            },
+
+            showNotification(message, type = 'info') {
+                // Simple notification system - could be enhanced with a toast library
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: ${type === 'success' ? '#48bb78' : '#4299e1'};
+                    color: white;
+                    padding: 15px 25px;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                    z-index: 1000;
+                    animation: slideIn 0.3s ease;
+                `;
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            },
+
+            confirmAction(message) {
+                // Using confirm for now - could be replaced with a custom modal
+                return confirm(message);
+            },
+
+            updateStats() {
+                document.getElementById('currentCard').textContent = this.filteredCards.length > 0 ? this.currentIndex + 1 : 0;
+                document.getElementById('totalCards').textContent = this.filteredCards.length;
+                document.getElementById('studiedCards').textContent = this.studiedSet.size;
+                
+                const progress = this.flashcards.length > 0 ? (this.studiedSet.size / this.flashcards.length) * 100 : 0;
+                document.getElementById('progressBar').style.width = progress + '%';
+            },
+
+            saveProgress() {
+                localStorage.setItem('goFlashcardsProgress', JSON.stringify([...this.studiedSet]));
+            },
+
+            loadProgress() {
+                const saved = localStorage.getItem('goFlashcardsProgress');
+                if (saved) {
+                    this.studiedSet = new Set(JSON.parse(saved));
+                }
+            },
+
+            setupKeyboardShortcuts() {
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowRight') {
+                        e.preventDefault();
+                        this.nextCard();
+                    } else if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        this.previousCard();
+                    } else if (e.key === ' ' || e.key === 'Spacebar') {
+                        e.preventDefault();
+                        this.flipCard();
+                    } else if (e.key === 'Enter') {
+                        e.preventDefault();
+                        this.markStudied();
+                    }
+                });
+            },
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            },
+
+            formatAnswer(text) {
+                // First escape all HTML to prevent XSS
+                const escaped = this.escapeHtml(text);
+                
+                // Then convert markdown-style bold to HTML (safe because we escaped first)
+                const formatted = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                
+                return formatted;
+            }
+        };
+
+        // Initialize the app when the page loads
+        document.addEventListener('DOMContentLoaded', () => app.init());
+    </script>
+</body>
+</html>
