@@ -28,7 +28,7 @@ This repository contains a comprehensive Go technical interview preparation syst
 
 **Option 1: Use GitHub Pages**
 1. Enable GitHub Pages in repository settings
-2. Access at: `https://s-inter.github.io/artificial-indigo/`
+2. Access at: [https://s-inter.github.io/artificial-indigo/](https://s-inter.github.io/artificial-indigo/)
 
 **Option 2: Run Locally**
 ```bash
